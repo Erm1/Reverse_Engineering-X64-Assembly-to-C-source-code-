@@ -1,0 +1,226 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf500
+{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red25\green28\blue31;\red223\green33\blue121;}
+{\*\expandedcolortbl;;\cssrgb\c12941\c14510\c16078;\cssrgb\c90980\c24314\c54902;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid101\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid102\'01\'01;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs64 \cf2 \expnd0\expndtw0\kerning0
+Setup\
+\pard\pardeftab720\partightenfactor0
+
+\fs32 \cf2 This is an individual assignment. Indeed, it is customized to every student. You may discuss questions and potential solutions with your classmates, but you may not look at their code or their solutions. If in doubt, ask the instructor.\
+You will need to use the CSUG machines. Your assignment includes binaries that are only guaranteed to work on CSUG machines. They may work elsewhere, but we will ignore any issues that arise from not using the CSUG machines.\
+If you want to take a slip day, as permitted by your syllabus, your email request must be sent to the instructor before the deadline. The instructor will note it, but will not acknowledge it immediately.\
+\pard\pardeftab720\partightenfactor0
+
+\fs64 \cf2 Preliminaries\
+\pard\pardeftab720\partightenfactor0
+
+\fs32 \cf2 To obtain your assignment, log in to a CSUG machine, and execute:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs28 \cf2 wget https://cs.rochester.edu/~sree/courses/csc-252-452/fall-2019/a2/a2-URID.zip\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 Replace URID with your URID. This will download your assignment. Unpack it.\
+\pard\pardeftab720\partightenfactor0
+
+\fs56 \cf2 Setup\
+\pard\pardeftab720\partightenfactor0
+
+\fs32 \cf2 The purpose of this assignment to write three C files containing only standard C constructs and no 
+\f1\fs28 \cf3 goto
+\f0\fs32 \cf2  statements. The code to be written in the C files must be inferred from looking at incomplete fragments of some supplied assembly language files.\
+To do a quick test, execute the following commands:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs28 \cf2 cd a2\
+touch a.c g.c s.c\
+make\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 The 
+\f1\fs28 \cf3 touch
+\f0\fs32 \cf2  command creates empty files (if they do not exist) or changes the last modified data of the file if it exists. In this case, you should see the following errors from 
+\f1\fs28 \cf3 make
+\f0\fs32 \cf2  (some of them will be different for you):\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs28 \cf2 gcc -c -std=c99 -Wall a.c -o a.o\
+gcc -c -std=c99 -Wall g.c -o g.o\
+gcc -c -std=c99 -Wall s.c -o s.o\
+gcc -std=c99 -Wall genkey.o a.o g.o s.o -o genkey\
+genkey.o: In function `main':\
+genkey.c:(.text+0x12): undefined reference to `r'\
+genkey.c:(.text+0x23): undefined reference to `ask'\
+genkey.c:(.text+0x32): undefined reference to `NP'\
+genkey.c:(.text+0xc7): undefined reference to `s'\
+genkey.c:(.text+0xd9): undefined reference to `ncmp'\
+genkey.c:(.text+0x11b): undefined reference to `ncmp'\
+collect2: error: ld returned 1 exit status\
+Makefile:7: recipe for target 'genkey' failed\
+make: *** [genkey] Error 1\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 Next, type 
+\f1\fs28 \cf3 ./unlock
+\f0\fs32 \cf2 , you should see:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs28 \cf2 Enter output from genkey for key length 7: ^C\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 Where 
+\f1\fs28 \cf3 ^C
+\f0\fs32 \cf2  means you pressed CTRL+C. Note the key length.\
+If you see this, you're all set to begin solving the assignment.\
+\pard\pardeftab720\partightenfactor0
+
+\fs56 \cf2 The Goal\
+\pard\pardeftab720\partightenfactor0
+
+\fs32 \cf2 Prof. Pain is in a bit of a spot. He created an unbreakable combination lock scheme a long time ago, but lost the source code! He only has the following:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0
+\f1\fs28 \cf3 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+unlock
+\f0\fs32 \cf2 , a program to unlock his lab, which is demanding a combination that he no longer remembers.\
+\ls1\ilvl0
+\f1\fs28 \cf3 \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+genkey.o
+\f0\fs32 \cf2 , a program to generate combinations for unlock, whose source code is completely lost. Only the object file remains.\
+\ls1\ilvl0
+\f1\fs28 \cf3 \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+a.asm
+\f0\fs32 \cf2 , 
+\f1\fs28 \cf3 g.asm
+\f0\fs32 \cf2 , and 
+\f1\fs28 \cf3 s.asm
+\f0\fs32 \cf2 , three programs that must be combined with 
+\f1\fs28 \cf3 genkey.o
+\f0\fs32 \cf2  to produce 
+\f1\fs28 \cf3 genkey
+\f0\fs32 \cf2 . The source code for these programs is also lost, and the assembly files are damaged, so they cannot be reliably reassembled.\
+\pard\pardeftab720\partightenfactor0
+\cf2 Prof. Pain thinks that he can read the assembly files and rewrite the C files (
+\f1\fs28 \cf3 a.c
+\f0\fs32 \cf2  for 
+\f1\fs28 \cf3 a.asm
+\f0\fs32 \cf2 , 
+\f1\fs28 \cf3 g.c
+\f0\fs32 \cf2  for 
+\f1\fs28 \cf3 g.asm
+\f0\fs32 \cf2 , 
+\f1\fs28 \cf3 s.c
+\f0\fs32 \cf2  for 
+\f1\fs28 \cf3 s.asm
+\f0\fs32 \cf2 ). Unfortunately, the assembly language files are for the new-fangled x64 architecture, and he has no time to learn a new ISA (VAX was good enough for him, and should be for everybody too!). So he's decided to create an assignment for CSC252 where he hears they're learning x64 assembly.\
+This is where you come in. Your job is to reverse engineer the C files that generated 
+\f1\fs28 \cf3 a.asm
+\f0\fs32 \cf2 , 
+\f1\fs28 \cf3 g.asm
+\f0\fs32 \cf2 , and 
+\f1\fs28 \cf3 s.asm
+\f0\fs32 \cf2 . This means that you look at the assembly code, and write the C code that replicates what the assembly code was trying to achieve.\
+If you succeed, you'll have three files 
+\f1\fs28 \cf3 a.c
+\f0\fs32 \cf2 , 
+\f1\fs28 \cf3 g.c
+\f0\fs32 \cf2  and 
+\f1\fs28 \cf3 s.c
+\f0\fs32 \cf2 . Once you have those files, run 
+\f1\fs28 \cf3 make
+\f0\fs32 \cf2 . It should give you a binary 
+\f1\fs28 \cf3 genkey
+\f0\fs32 \cf2 . Then:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs28 \cf2 ./unlock\
+Enter output from genkey for key length 7: ^C\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 Where 
+\f1\fs28 \cf3 ^C
+\f0\fs32 \cf2  means you pressed CTRL+C. Note the key length.\
+Run 
+\f1\fs28 \cf3 ./genkey
+\f0\fs32 \cf2 , and type in the key length you saw:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs28 \cf2 Press CTRL+C to exit.\
+Enter a positive integer for key size: 7\
+7 is just right!\
+Your combination is:\
+7 9 9 52 64 117 167 160 193\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 Then type the combination into 
+\f1\fs28 \cf3 unlock
+\f0\fs32 \cf2 :\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs28 \cf2 ./unlock\
+Enter output from genkey for key length 7: 7 9 9 52 64 117 167 160 193\
+YOU ARE IN!\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 You will get the above message if you succeed. If you did not succeed, you'll see this instead:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs28 \cf2 ./unlock\
+Enter output from genkey for key length 7: 7 9 9 52 64 117 167 160 19\
+ERROR: Combination failed.\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 There are no limit to the number of times you can try, since the goal of this assignment is NOT to figure out the combination. It is to be able to demonstrate that you can manually reconstruct C code from assembly language.\
+The autograder has been setup to test if your reconstructed C code is the fully correct, not just if your reconstructed program can output the right combination. Make sure it is satisfied to ensure a full grade. (The autograder will be available starting Friday evening).\
+\pard\pardeftab720\partightenfactor0
+
+\fs56 \cf2 How to do this assignment\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0
+\fs32 \cf2 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Identify all global variables (including their types and default values) by looking at the assembly files. Put them in the correct C files (
+\f1\fs28 \cf3 a.c
+\f0\fs32 \cf2 , 
+\f1\fs28 \cf3 g.c
+\f0\fs32 \cf2  or 
+\f1\fs28 \cf3 s.c
+\f0\fs32 \cf2 ).\
+\ls2\ilvl0\kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Identify all the functions from the assembly language files, including the parameters they take and their return types. Put empty functions with this information into the correct C files.\
+\ls2\ilvl0\kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+At this point, you should be able to run 
+\f1\fs28 \cf3 make
+\f0\fs32 \cf2  to compile and obtain 
+\f1\fs28 \cf3 genkey
+\f0\fs32 \cf2 . You can run 
+\f1\fs28 \cf3 ./genkey
+\f0\fs32 \cf2 , but it will not produce the right combination (and may not even run correctly), but it can only get better from this stage.\
+\ls2\ilvl0\kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+Look at the assembly code for each function. Recall that it is damaged, and may be missing things you expect to find. It is generally believed the actual logic is unscathed.\uc0\u8232 Now, for each function:\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls2\ilvl1\cf2 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Recover local variables and their types.\
+\ls2\ilvl1\kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Recover expressions.\
+\ls2\ilvl1\kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Recover conditionals and loops.\
+\ls2\ilvl1\kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+Reconstruct the C code and write it in the correct place.\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0\cf2 \kerning1\expnd0\expndtw0 {\listtext	5	}\expnd0\expndtw0\kerning0
+Repeat Step 4 for all assembly files, run 
+\f1\fs28 \cf3 make
+\f0\fs32 \cf2 , and 
+\f1\fs28 \cf3 genkey
+\f0\fs32 \cf2  until the 
+\f1\fs28 \cf3 unlock
+\f0\fs32 \cf2  program cracks.\
+\pard\pardeftab720\partightenfactor0
+\cf2 None of the C functions are very long. Good luck!}
